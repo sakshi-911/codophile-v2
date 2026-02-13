@@ -58,6 +58,11 @@ export const playgroundData = {
                 title: "CSS Typography Playground - Font Properties Editor",
                 description: "Experiment with CSS typography properties including font-family, font-size, font-weight, line-height, letter-spacing, and text-transform.",
                 keywords: ["css typography", "font properties", "font-family", "font-size", "letter-spacing", "line-height"]
+            },
+            grid: {
+                title: "CSS Grid Layout Playground - Visual Grid Container Editor",
+                description: "Master CSS Grid layout with interactive controls for grid-template-columns, grid-template-rows, gap, and grid-item placement.",
+                keywords: ["css grid", "grid layout", "grid-template-columns", "grid-gap", "grid-area"]
             }
         }
     },
