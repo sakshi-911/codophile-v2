@@ -40,7 +40,7 @@ export default function ClientEditor() {
         if (effect) {
             setHtmlCode(effect.code.html);
             setCssCode(effect.code.css);
-            setJsCode(effect.code.js);
+            setJsCode(effect.code.js || "");
         }
     }, [effect]);
 
@@ -420,8 +420,7 @@ ${component}`;
                     </div>
 
                     {/* Iframe Container */}
-                    <div className="flex-1 min-h-0 relative flex flex-col">
-                        <div className="absolute inset-0 bg-gray-900/10 backdrop-blur-[2px]" />
+                    <div className="flex-1 min-h-0 relative bg-[radial-gradient(circle_at_top_left,#1f1545,#0d0b1a_70%)] flex flex-col">
                         <iframe
                             srcDoc={srcDoc}
                             className={`w-full flex-1 min-h-0 relative z-10 border-0 ${isDragging ? 'pointer-events-none' : ''}`}

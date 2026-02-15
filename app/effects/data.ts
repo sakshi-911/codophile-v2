@@ -9175,6 +9175,247 @@ document.addEventListener('mousemove', (e) => {
         js: `// Refined CSS-only interaction`
     }
 },
+{
+    id: "social-reveal-link",
+    title: "The Social Reveal Link",
+    description: "An upscaled version of the social handle link. Increased base diameter to 52px for better visibility and a wider expansion for comfortable legibility of longer handles.",
+    tags: ["Social", "UI", "Link", "Compact", "Premium"],
+    code: {
+        html: `
+<a href="#" class="social-pill-link x-brand">
+    <div class="icon-circle">
+        <span class="brand-icon">𝕏</span>
+    </div>
+    <div class="label-box">
+        <span class="full-name">Aman</span>
+        <span class="handle">@aman_dev</span>
+    </div>
+</a>`,
+        css: `
+.social-pill-link {
+    display: inline-flex; 
+    align-items: center; 
+    padding: 6px;
+    background: #1a1a1a; 
+    border-radius: 100px;
+    cursor: pointer;
+    text-decoration: none;
+    /* Increased base size */
+    width: 52px; 
+    height: 52px; 
+    overflow: hidden;
+    transition: width 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease;
+}
+
+.social-pill-link:hover { 
+    /* Increased expanded width */
+    width: 240px; 
+    background: #222; 
+}
+
+.icon-circle {
+    position: relative; 
+    /* Increased inner circle size */
+    min-width: 52px; 
+    height: 52px;
+    background: #000; 
+    border-radius: 50%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.brand-icon { 
+    color: #fff; 
+    /* Increased icon size */
+    font-size: 22px; 
+    font-weight: bold; 
+}
+
+.label-box {
+    margin-left: 18px; 
+    display: flex; 
+    flex-direction: column;
+    opacity: 0; 
+    transform: translateX(-20px);
+    transition: opacity 0.3s ease, transform 0.4s ease;
+    white-space: nowrap;
+}
+
+.social-pill-link:hover .label-box { 
+    opacity: 1; 
+    transform: translateX(0); 
+}
+
+.full-name { 
+    color: #fff; 
+    font-family: 'Inter', sans-serif; 
+    font-weight: bold; 
+    /* Increased font size */
+    font-size: 16px; 
+    line-height: 1.2;
+}
+
+.handle { 
+    color: #888; 
+    font-family: 'Inter', sans-serif; 
+    /* Increased font size */
+    font-size: 13px; 
+}
+
+.social-pill-link:active {
+    transform: scale(0.96);
+}`
+    }
+},
+{
+    id: "insta-premium-circle-expand",
+    title: "Instagram social handle button",
+    description: "The refined version of the social expand button. Corrects the aspect ratio to ensure the button is a geometrically perfect circle in its idle state before expanding into a pill shape.",
+    tags: ["Social", "Premium", "Circle", "Animation", "Fixed"],
+    code: {
+        html: `
+    <a href="#" class="insta-premium-btn">
+        <div class="btn-glow"></div>
+        <div class="btn-content">
+            <div class="icon-wrapper">
+                <div class="icon-ring"></div>
+                <svg class="insta-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+            </div>
+            <div class="text-content">
+                <div class="name">Jessica Sanders</div>
+                <div class="action">View Profile</div>
+            </div>
+        </div>
+    </a>`,
+        css: `
+:root {
+    --insta-grad: conic-gradient(#833ab4, #fd1d1d, #fcb045, #833ab4);
+}
+
+/* Main button container */
+.insta-premium-btn {
+    position: relative;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 60px;
+    z-index: 1;
+}
+
+/* The soft, multi-color glow */
+.btn-glow {
+    position: absolute;
+    inset: -4px;
+    background: var(--insta-grad);
+    border-radius: 60px;
+    filter: blur(15px);
+    opacity: 0.5;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+}
+
+/* Button content wrapper - The animating pill */
+.btn-content {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    
+    /* FIX: Set width to match icon-wrapper (52px) exactly. 
+       52px content + 24px padding = 76px total width.
+       Height is also 76px. Result: Perfect Circle. */
+    width: 52px; 
+    
+    background: rgba(30, 30, 30, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 60px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    /* Animation props */
+    overflow: hidden;
+    transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Icon Wrapper */
+.icon-wrapper {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #000;
+    flex-shrink: 0; 
+}
+
+/* Gradient ring */
+.icon-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    padding: 3px;
+    background: var(--insta-grad);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.insta-icon { color: #fff; z-index: 2; }
+
+/* Text Styling - Hidden by default */
+.text-content {
+    display: flex;
+    flex-direction: column;
+    margin-left: 15px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.3s ease, transform 0.4s ease;
+    white-space: nowrap; 
+}
+
+.name {
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+}
+
+.action {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+}
+
+/* --- HOVER STATES --- */
+
+/* Expand width on hover */
+.insta-premium-btn:hover .btn-content {
+    width: 210px; /* Expanded width to fit text */
+}
+
+.insta-premium-btn:hover .text-content {
+    opacity: 1;
+    transform: translateX(0);
+    transition-delay: 0.1s;
+}
+
+.insta-premium-btn:hover .btn-glow {
+    opacity: 0.8;
+}
+
+.insta-premium-btn:active {
+    transform: scale(0.96);
+}
+`
+    }
+},
 
 
 
