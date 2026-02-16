@@ -103,6 +103,13 @@ const categories = [
         icon: "/icons/Transitions.png",
         href: "/playground/css/transitions",
         color: "from-yellow-400 to-orange-500"
+    },
+    {
+        title: "Tooltips",
+        description: "Create custom tooltips with positioning, arrows, and animations.",
+        icon: "/icons/interactivity.png",
+        href: "/playground/css/tooltip",
+        color: "from-lime-400 to-green-500"
     }
 ];
 

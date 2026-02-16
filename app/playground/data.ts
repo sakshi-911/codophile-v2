@@ -63,6 +63,11 @@ export const playgroundData = {
                 title: "CSS Grid Layout Playground - Visual Grid Container Editor",
                 description: "Master CSS Grid layout with interactive controls for grid-template-columns, grid-template-rows, gap, and grid-item placement.",
                 keywords: ["css grid", "grid layout", "grid-template-columns", "grid-gap", "grid-area"]
+            },
+            tooltip: {
+                title: "CSS Tooltip Playground - Positioning & Effects",
+                description: "Design and customize CSS tooltips. Experiment with positioning, arrows, colors, and animations for engaging user interfaces.",
+                keywords: ["css tooltip", "tooltip positioning", "css arrow", "tooltip animation", "hover effects"]
             }
         }
     },
