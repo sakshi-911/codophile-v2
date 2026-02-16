@@ -130,6 +130,11 @@ export const playgroundData = {
                 title: "Tailwind Tooltips - Position & Arrow Utilities",
                 description: "Create custom tooltips using Tailwind CSS positioning, visibility, and border utilities. Master the art of tooltip creation.",
                 keywords: ["tailwind tooltip", "tooltip positioning", "tailwind arrow", "hover effects", "group-hover"]
+            },
+            pagination: {
+                title: "Tailwind Pagination Playground - Navigation Components",
+                description: "Design and customize Tailwind CSS pagination links. Experiment with various styles like bordered, rounded, active states, and hover effects using utility classes.",
+                keywords: ["tailwind pagination", "pagination components", "active state tailwind", "hover effects tailwind", "breadcrumb tailwind"]
             }
         }
     }

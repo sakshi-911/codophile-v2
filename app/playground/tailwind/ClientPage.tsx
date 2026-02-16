@@ -87,6 +87,13 @@ const categories = [
         icon: "/icons/interactivity.png",
         href: "/playground/tailwind/tooltip",
         color: "from-lime-400 to-green-500"
+    },
+    {
+        title: "Pagination",
+        description: "Design custom navigation links, breadcrumbs, and pagination styles.",
+        icon: "/icons/Layout-utilities.png",
+        href: "/playground/tailwind/pagination",
+        color: "from-sky-500 to-indigo-500"
     }
 ];
 
