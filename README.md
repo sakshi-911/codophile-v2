@@ -63,9 +63,29 @@ NEXT_PUBLIC_ALGOLIA_APP_ID=your_algolia_app_id
 NEXT_PUBLIC_ALGOLIA_SEARCH_KEY=your_algolia_search_key
 ALGOLIA_ADMIN_KEY=your_algolia_admin_key
 NEXT_PUBLIC_ALGOLIA_INDEX_NAME=your_algolia_index_name
+MONGODB_URI=mongodb://127.0.0.1:27017/codophile
+JWT_SECRET=your_jwt_secret_key
 ```
 
-> **Note:** `NEXT_PUBLIC_*` variables are inlined into the client-side bundle at **build time**. The `ALGOLIA_ADMIN_KEY` is a server-side secret used only at **runtime**.
+> **Note:** `NEXT_PUBLIC_*` variables are inlined into the client-side bundle at **build time**. The `ALGOLIA_ADMIN_KEY`, `MONGODB_URI`, and `JWT_SECRET` are server-side secrets used only at **runtime**.
+
+### Admin Setup
+
+To access the admin dashboard, you need to create an initial super admin account. Once your MongoDB is running and your `.env.local` is configured, you can create the first admin using the following command:
+
+```bash
+npm run create-admin
+```
+
+This will create a default super admin with:
+- **Email:** `admin@codophile.com`
+- **Password:** `admin123`
+
+To create a specific admin, you can provide arguments:
+
+```bash
+npm run create-admin -- "your_email@example.com" "your_password" "Your Name"
+```
 
 ### Interpretation
 
