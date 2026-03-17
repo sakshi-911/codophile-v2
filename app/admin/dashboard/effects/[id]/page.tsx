@@ -82,6 +82,19 @@ function ThumbnailUploader({
                 throw new Error('Upload to S3 failed');
             }
 
+            // 3. Delete old thumbnail from S3 if replacing
+            if (currentUrl) {
+                try {
+                    await fetch('/api/admin/upload', {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url: currentUrl })
+                    });
+                } catch (delErr) {
+                    console.error('Failed to delete old thumbnail:', delErr);
+                }
+            }
+
             onUploaded(publicUrl);
             setSuccess(true);
         } catch (err: any) {
@@ -155,7 +168,19 @@ function ThumbnailUploader({
                 <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-3 py-2">
                     <span className="text-xs text-zinc-500 truncate flex-1">{currentUrl}</span>
                     <button
-                        onClick={() => { onUploaded(''); setSuccess(false); }}
+                        onClick={async () => { 
+                            try {
+                                await fetch('/api/admin/upload', {
+                                    method: 'DELETE',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ url: currentUrl })
+                                });
+                            } catch (err) {
+                                console.error('Failed to delete thumbnail:', err);
+                            }
+                            onUploaded(''); 
+                            setSuccess(false); 
+                        }}
                         className="text-zinc-600 hover:text-red-400 transition-colors shrink-0"
                         title="Remove"
                     >
