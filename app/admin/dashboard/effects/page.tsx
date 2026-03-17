@@ -10,6 +10,8 @@ export default function EffectsManagementPage() {
   const [effects, setEffects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isBulkLoading, setIsBulkLoading] = useState(false);
   const router = useRouter();
 
   const fetchEffects = async () => {
@@ -53,6 +55,45 @@ export default function EffectsManagementPage() {
     e.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleBulkUpdate = async (isPublished: boolean) => {
+    if (!selectedIds.length) return;
+    setIsBulkLoading(true);
+    try {
+      const res = await fetch('/api/admin/effects/bulk', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedIds, isPublished }),
+      });
+      if (res.ok) {
+        setEffects(effects.map(e => selectedIds.includes(e._id) ? { ...e, isPublished } : e));
+        setSelectedIds([]);
+      } else {
+        const data = await res.json();
+        alert(data.message || 'Error updating effects');
+      }
+    } catch (err) {
+      console.error('Error updating effects', err);
+    } finally {
+      setIsBulkLoading(false);
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === filteredEffects.length && filteredEffects.length > 0) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredEffects.map(e => e._id));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter(selectedId => selectedId !== id));
+    } else {
+      setSelectedIds([...selectedIds, id]);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
@@ -72,13 +113,33 @@ export default function EffectsManagementPage() {
           <h1 className="text-3xl font-bold text-white tracking-tight">Effects Management</h1>
           <p className="text-zinc-400 mt-1 pb-2">Create, edit, and manage code effects / components.</p>
         </div>
-        <Link
-          href="/admin/dashboard/effects/new"
-          className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md font-medium transition-all shadow-lg shadow-indigo-500/25 active:scale-95 whitespace-nowrap mb-2"
-        >
-          <Plus className="w-4 h-4" />
-          Add New Effect
-        </Link>
+        <div className="flex gap-3 mb-2">
+          {selectedIds.length > 0 && (
+            <>
+              <button
+                onClick={() => handleBulkUpdate(true)}
+                disabled={isBulkLoading}
+                className="flex items-center gap-2 px-4 py-2.5 bg-green-600/20 hover:bg-green-600/30 text-green-400 border border-green-500/30 rounded-md font-medium transition-all active:scale-95 whitespace-nowrap disabled:opacity-50"
+              >
+                Publish ({selectedIds.length})
+              </button>
+              <button
+                onClick={() => handleBulkUpdate(false)}
+                disabled={isBulkLoading}
+                className="flex items-center gap-2 px-4 py-2.5 bg-yellow-600/20 hover:bg-yellow-600/30 text-yellow-500 border border-yellow-500/30 rounded-md font-medium transition-all active:scale-95 whitespace-nowrap disabled:opacity-50"
+              >
+                Unpublish ({selectedIds.length})
+              </button>
+            </>
+          )}
+          <Link
+            href="/admin/dashboard/effects/new"
+            className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md font-medium transition-all shadow-lg shadow-indigo-500/25 active:scale-95 whitespace-nowrap"
+          >
+            <Plus className="w-4 h-4" />
+            Add New Effect
+          </Link>
+        </div>
       </motion.div>
 
       <motion.div
@@ -104,7 +165,15 @@ export default function EffectsManagementPage() {
           <table className="w-full text-left text-sm text-zinc-400 whitespace-nowrap">
             <thead className="bg-white/5 border-b border-white/5 text-xs uppercase text-zinc-500 font-semibold tracking-wider">
               <tr>
-                <th scope="col" className="px-6 py-4 rounded-tl">Effect Details</th>
+                <th scope="col" className="px-6 py-4 rounded-tl w-12">
+                  <input 
+                    type="checkbox" 
+                    className="rounded border-white/10 bg-black/40 text-indigo-500 focus:ring-indigo-500/50 cursor-pointer"
+                    checked={filteredEffects.length > 0 && selectedIds.length === filteredEffects.length}
+                    onChange={toggleSelectAll}
+                  />
+                </th>
+                <th scope="col" className="px-6 py-4">Effect Details</th>
                 <th scope="col" className="px-6 py-4">Status</th>
                 <th scope="col" className="px-6 py-4 hidden sm:table-cell">Created</th>
                 <th scope="col" className="px-6 py-4 text-right rounded-tr">Actions</th>
@@ -114,8 +183,16 @@ export default function EffectsManagementPage() {
               {filteredEffects.map((effect) => (
                 <tr 
                   key={effect._id} 
-                  className="hover:bg-white/5 transition-colors group"
+                  className={`hover:bg-white/5 transition-colors group ${selectedIds.includes(effect._id) ? 'bg-indigo-500/5' : ''}`}
                 >
+                  <td className="px-6 py-4">
+                    <input 
+                      type="checkbox" 
+                      className="rounded border-white/10 bg-black/40 text-indigo-500 focus:ring-indigo-500/50 cursor-pointer"
+                      checked={selectedIds.includes(effect._id)}
+                      onChange={() => toggleSelect(effect._id)}
+                    />
+                  </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded bg-indigo-500/10 flex items-center justify-center shrink-0 border border-indigo-500/20 overflow-hidden">
@@ -172,7 +249,7 @@ export default function EffectsManagementPage() {
 
               {filteredEffects.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-zinc-500">
+                  <td colSpan={5} className="px-6 py-12 text-center text-zinc-500">
                     <p>No effects found matching your search.</p>
                   </td>
                 </tr>

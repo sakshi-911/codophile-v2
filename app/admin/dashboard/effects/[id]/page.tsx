@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import {
     ArrowLeft, Save, Loader2, Play, Code, Layers, Layout, 
     Terminal, XCircle, Trash2, Maximize2, Minimize2, Download,
-    Columns, X, GripVertical, ImagePlus, CheckCircle, AlertCircle, Upload
+    Columns, X, GripVertical, ImagePlus, CheckCircle, AlertCircle, Upload, Rows
 } from 'lucide-react';
 import Editor from '@monaco-editor/react';
 import Image from 'next/image';
@@ -221,10 +221,16 @@ export default function AdminEffectEditor() {
 
     // ── Layout State ────────────────────────────────────────────────────────────
     const [layout, setLayout] = useState<'split' | 'preview' | 'editor'>('split');
+    const [splitOrientation, setSplitOrientation] = useState<'row' | 'col'>('row');
     const [panelOpen, setPanelOpen] = useState(true);
     const [splitPosition, setSplitPosition] = useState(50);
     const [isDragging, setIsDragging] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    // ── Settings Slider State ───────────────────────────────────────────────────
+    const [settingsHeight, setSettingsHeight] = useState(30);
+    const [isDraggingSettings, setIsDraggingSettings] = useState(false);
+    const mainContainerRef = useRef<HTMLDivElement>(null);
 
     // ── Console State ───────────────────────────────────────────────────────────
     const [logs, setLogs] = useState<{ type: 'log' | 'error' | 'warn'; message: string }[]>([]);
@@ -280,14 +286,15 @@ export default function AdminEffectEditor() {
         if (e.cancelable) e.preventDefault();
         const rect = containerRef.current.getBoundingClientRect();
         const isDesktop = window.innerWidth >= 1024;
-        if (isDesktop) {
+        const isRow = isDesktop && splitOrientation === 'row';
+        if (isRow) {
             const clientX = 'touches' in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
             setSplitPosition(Math.min(Math.max(((clientX - rect.left) / rect.width) * 100, 20), 80));
         } else {
             const clientY = 'touches' in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
             setSplitPosition(Math.min(Math.max(((clientY - rect.top) / rect.height) * 100, 20), 80));
         }
-    }, [isDragging]);
+    }, [isDragging, splitOrientation]);
 
     useEffect(() => {
         if (isDragging) {
@@ -308,6 +315,42 @@ export default function AdminEffectEditor() {
             window.removeEventListener('touchend', stopDragging);
         };
     }, [isDragging, onDrag, stopDragging]);
+
+    // ── Settings Resizer ────────────────────────────────────────────────────────
+    const startDraggingSettings = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+        setIsDraggingSettings(true);
+        e.preventDefault();
+    }, []);
+
+    const stopDraggingSettings = useCallback(() => setIsDraggingSettings(false), []);
+
+    const onDragSettings = useCallback((e: MouseEvent | TouchEvent) => {
+        if (!isDraggingSettings || !mainContainerRef.current) return;
+        if (e.cancelable) e.preventDefault();
+        const rect = mainContainerRef.current.getBoundingClientRect();
+        const clientY = 'touches' in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
+        setSettingsHeight(Math.min(Math.max(((clientY - rect.top) / rect.height) * 100, 10), 80));
+    }, [isDraggingSettings]);
+
+    useEffect(() => {
+        if (isDraggingSettings) {
+            window.addEventListener('mousemove', onDragSettings);
+            window.addEventListener('mouseup', stopDraggingSettings);
+            window.addEventListener('touchmove', onDragSettings, { passive: false });
+            window.addEventListener('touchend', stopDraggingSettings);
+        } else {
+            window.removeEventListener('mousemove', onDragSettings);
+            window.removeEventListener('mouseup', stopDraggingSettings);
+            window.removeEventListener('touchmove', onDragSettings);
+            window.removeEventListener('touchend', stopDraggingSettings);
+        }
+        return () => {
+            window.removeEventListener('mousemove', onDragSettings);
+            window.removeEventListener('mouseup', stopDraggingSettings);
+            window.removeEventListener('touchmove', onDragSettings);
+            window.removeEventListener('touchend', stopDraggingSettings);
+        };
+    }, [isDraggingSettings, onDragSettings, stopDraggingSettings]);
 
     // ── Code Generation ─────────────────────────────────────────────────────────
     const generateCode = useCallback((format: 'html' | 'react' | 'next') => {
@@ -492,7 +535,15 @@ window.onerror=(m)=>{parent.postMessage({type:'console-message',level:'error',ar
                     </span>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-3 shrink-0">
+                    <label className="hidden sm:flex items-center gap-2 cursor-pointer border-r border-white/10 pr-3">
+                        <span className="text-xs font-medium text-zinc-400">Publish</span>
+                        <div className={`relative w-8 h-4 rounded-full transition-colors ${isPublished ? 'bg-indigo-600' : 'bg-zinc-700'}`}
+                            onClick={() => setIsPublished(v => !v)}>
+                            <div className={`absolute top-[2px] left-[2px] w-3 h-3 rounded-full bg-white shadow transition-transform ${isPublished ? 'translate-x-4' : ''}`} />
+                        </div>
+                    </label>
+
                     <button
                         onClick={() => setPanelOpen(v => !v)}
                         className={`hidden sm:flex items-center gap-2 px-3 py-1.5 text-xs font-medium border transition-colors ${panelOpen
@@ -521,9 +572,13 @@ window.onerror=(m)=>{parent.postMessage({type:'console-message',level:'error',ar
                 </div>
             </div>
 
-            {/* ═══════════════════════════ SETTINGS PANEL ═══════════════════════ */}
-            {panelOpen && (
-                <div className="shrink-0 bg-[#060606] border-b border-white/5">
+            {/* ═══════════════════════════ MAIN CONTENT AREA ════════════════════ */}
+            <div ref={mainContainerRef} className="flex-1 flex flex-col min-h-0 relative">
+
+                {/* ═══════════════════════════ SETTINGS PANEL ═══════════════════════ */}
+                {panelOpen && (
+                    <>
+                        <div style={{ height: `${settingsHeight}%` }} className="flex flex-col shrink-0 bg-[#060606] overflow-y-auto">
                     {/* Panel Tabs */}
                     <div className="flex border-b border-white/5 px-4">
                         {(['basic', 'seo', 'thumbnail'] as const).map(tab => (
@@ -568,20 +623,6 @@ window.onerror=(m)=>{parent.postMessage({type:'console-message',level:'error',ar
                                 />
                             </div>
 
-                            <div className="md:col-span-2">
-                                <label className="flex items-center gap-3 cursor-pointer w-fit">
-                                    <div className={`relative w-10 h-5 rounded-full transition-colors ${isPublished ? 'bg-indigo-600' : 'bg-zinc-700'}`}
-                                        onClick={() => setIsPublished(v => !v)}>
-                                        <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${isPublished ? 'translate-x-5' : ''}`} />
-                                    </div>
-                                    <div>
-                                        <span className="text-sm font-medium text-white block">
-                                            {isPublished ? 'Published — visible to users' : 'Draft — hidden from users'}
-                                        </span>
-                                        <span className="text-xs text-zinc-500">Toggle to control public visibility of this effect.</span>
-                                    </div>
-                                </label>
-                            </div>
                         </div>
                     )}
 
@@ -658,10 +699,20 @@ window.onerror=(m)=>{parent.postMessage({type:'console-message',level:'error',ar
                         </div>
                     )}
                 </div>
+                {/* ════════════════════════ SETTINGS RESIZER ═════════════════════ */}
+                <div
+                    className="z-50 flex items-center justify-center bg-[#0a0a0a] hover:bg-white/5 transition-colors cursor-row-resize touch-none select-none w-full h-3 border-b border-white/5 shrink-0"
+                    onMouseDown={startDraggingSettings} onTouchStart={startDraggingSettings}
+                >
+                    <div className="flex gap-1 opacity-50">
+                        {[0,1,2].map(i => <div key={i} className="w-1 h-1 rounded-full bg-gray-500" />)}
+                    </div>
+                </div>
+                </>
             )}
 
             {/* ═══════════════════════════ SPLIT EDITOR ═══════════════════════ */}
-            <div ref={containerRef} className="flex-1 flex flex-col lg:flex-row min-h-0 relative">
+            <div ref={containerRef} className={`flex-1 flex min-h-0 relative ${splitOrientation === 'row' ? 'flex-col lg:flex-row' : 'flex-col'}`}>
 
                 {/* LEFT: Preview */}
                 <div
@@ -676,9 +727,13 @@ window.onerror=(m)=>{parent.postMessage({type:'console-message',level:'error',ar
                                     className={`p-1.5 transition-colors ${layout === 'preview' ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'}`}>
                                     <Maximize2 className="w-3.5 h-3.5" />
                                 </button>
-                                <button onClick={() => setLayout('split')} title="Split View"
-                                    className={`p-1.5 transition-colors ${layout === 'split' ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'}`}>
+                                <button onClick={() => { setLayout('split'); setSplitOrientation('row'); }} title="Split Side-by-Side"
+                                    className={`p-1.5 transition-colors ${layout === 'split' && splitOrientation === 'row' ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'}`}>
                                     <Columns className="w-3.5 h-3.5" />
+                                </button>
+                                <button onClick={() => { setLayout('split'); setSplitOrientation('col'); }} title="Split Top-and-Bottom"
+                                    className={`p-1.5 transition-colors ${layout === 'split' && splitOrientation === 'col' ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'}`}>
+                                    <Rows className="w-3.5 h-3.5" />
                                 </button>
                             </div>
                             <div className="h-4 w-px bg-white/10 mx-1" />
@@ -735,14 +790,22 @@ window.onerror=(m)=>{parent.postMessage({type:'console-message',level:'error',ar
                 {/* RESIZER */}
                 {layout === 'split' && (
                     <div
-                        className="z-50 flex items-center justify-center bg-[#0a0a0a] hover:bg-white/5 transition-colors cursor-row-resize lg:cursor-col-resize touch-none select-none w-full h-4 lg:w-4 lg:h-full border-y border-white/5 lg:border-x lg:border-y-0"
+                        className={`z-50 flex items-center justify-center bg-[#0a0a0a] hover:bg-white/5 transition-colors touch-none select-none ${splitOrientation === 'row' ? 'cursor-row-resize lg:cursor-col-resize w-full h-4 lg:w-4 lg:h-full border-y border-white/5 lg:border-x lg:border-y-0' : 'cursor-row-resize w-full h-4 border-y border-white/5'}`}
                         onMouseDown={startDragging} onTouchStart={startDragging}
                     >
                         <div className="flex items-center justify-center opacity-50">
-                            <GripVertical className="hidden lg:block w-4 h-4 text-gray-400" />
-                            <div className="lg:hidden flex gap-1">
-                                {[0,1,2].map(i => <div key={i} className="w-1 h-1 rounded-full bg-gray-500" />)}
-                            </div>
+                            {splitOrientation === 'row' ? (
+                                <>
+                                    <GripVertical className="hidden lg:block w-4 h-4 text-gray-400" />
+                                    <div className="lg:hidden flex gap-1">
+                                        {[0,1,2].map(i => <div key={i} className="w-1 h-1 rounded-full bg-gray-500" />)}
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="flex gap-1">
+                                    {[0,1,2].map(i => <div key={i} className="w-1 h-1 rounded-full bg-gray-500" />)}
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
@@ -802,6 +865,8 @@ window.onerror=(m)=>{parent.postMessage({type:'console-message',level:'error',ar
                     </div>
                 </div>
             </div>
+
+            </div> {/* END MAIN CONTENT AREA */}
 
             {/* ═══════════════════════════ EXPORT MODAL ════════════════════════ */}
             {showExportModal && (
