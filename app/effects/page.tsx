@@ -101,9 +101,9 @@ function EffectsContent() {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-7xl font-bold tracking-tight mb-6 flex flex-nowrap justify-center items-center whitespace-nowrap"
           >
-            Cool CSS{" "}
+            Immersive Interface{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 animate-gradient-x">
-              Effects
+              Elements
             </span>
           </motion.h1>
 
@@ -113,8 +113,7 @@ function EffectsContent() {
             transition={{ delay: 0.2 }}
             className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed"
           >
-            A curated collection of stunning visual effects, ready to copy-paste.
-            Explore, tweak, and implement modern UI magic.
+            A premium library of high-fidelity animations and UI components. Customize and copy-paste modern web magic directly into your project.
           </motion.p>
         </div>
 

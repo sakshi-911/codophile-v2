@@ -59,7 +59,7 @@ export default function Hero() {
                         transition={{ duration: 0.5 }}
                     >
                         <h1 className="text-5xl md:text-7xl font-bold leading-[1.1] tracking-tight">
-                            Design at the <br />
+                            Craft UI at the <br />
                             <span className="bg-clip-text text-transparent bg-linear-to-r from-violet-400 via-fuchsia-400 to-white animate-gradient-x">
                                 Speed of Thought
                             </span>
@@ -72,9 +72,7 @@ export default function Hero() {
                         transition={{ duration: 0.5, delay: 0.2 }}
                         className="text-lg text-gray-400 max-w-xl leading-relaxed"
                     >
-                        The comprehensive visual CSS editor for developers.
-                        Manipulate properties in real-time, inspect physics-based interactions,
-                        and export clean Tailwind code instantly.
+                        The ultimate visual CSS and Tailwind editor built for developers. Visually manipulate layouts in real-time, fine-tune interactions, and export production-ready code instantly.
                     </motion.p>
                     <div className="sr-only">
                     <h1>
@@ -118,9 +116,9 @@ export default function Hero() {
                         className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-10 border-t border-white/5"
                     >
                         {[
-                            { label: "Zero Latency", value: "Real-time" },
-                            { label: "Export", value: "Tailwind/CSS" },
-                            { label: "Components", value: "500+" }
+                            { label: "Zero Latency", value: "Visual Editor" },
+                            { label: "TAILWIND & CSS", value: "Instant Export" },
+                            { label: "UI COMPONENTS", value: "500+" }
                         ].map((stat, i) => (
                             <div key={i} className="space-y-1">
                                 <div className="text-xl md:text-2xl font-bold text-white font-mono wrap-break-word">{stat.value}</div>

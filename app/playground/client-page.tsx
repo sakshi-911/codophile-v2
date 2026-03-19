@@ -35,7 +35,7 @@ export default function PlaygroundClientPage() {
                         transition={{ delay: 0.1 }}
                         className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed"
                     >
-                        Select a technology to start experimenting. Meaningful visual controls for every property.
+                        Select your framework and take control. Tweak every property with intuitive visual sliders and get real-time feedback.
                     </motion.p>
                 </div>
 
@@ -48,12 +48,12 @@ export default function PlaygroundClientPage() {
                                 <Palette className="w-10 h-10 text-violet-400" />
                             </div>
                             <div>
-                                <h2 className="text-3xl font-bold mb-3 group-hover:text-violet-400 transition-colors">CSS Playground</h2>
+                                <h2 className="text-3xl font-bold mb-3 group-hover:text-violet-400 transition-colors">Vanilla CSS Editor</h2>
                                 <p className="text-gray-400 text-sm mb-8 leading-relaxed max-w-sm mx-auto">
-                                    Master raw CSS properties. Layouts, transforms, animations, and more with visual sliders.
+                                   Master raw CSS visually. Manipulate complex layouts, transforms, and keyframe animations without writing boilerplate.
                                 </p>
                                 <span className="inline-flex items-center justify-center gap-2 px-6 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-medium text-violet-300 group-hover:bg-violet-500/10 transition-colors">
-                                    Enter Playground <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                    Launch CSS Editor <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </span>
                             </div>
                         </div>
@@ -67,12 +67,12 @@ export default function PlaygroundClientPage() {
                                 <Wind className="w-10 h-10 text-cyan-400" />
                             </div>
                             <div>
-                                <h2 className="text-3xl font-bold mb-3 group-hover:text-cyan-400 transition-colors">Tailwind Playground</h2>
+                                <h2 className="text-3xl font-bold mb-3 group-hover:text-cyan-400 transition-colors">Tailwind Generator</h2>
                                 <p className="text-gray-400 text-sm mb-8 leading-relaxed max-w-sm mx-auto">
-                                    Experiment with utility classes. Rapidly build and test layouts with the power of Tailwind.
+                                    Build responsive layouts at warp speed. Experiment with utility classes visually and export clean Tailwind code in seconds.
                                 </p>
                                 <span className="inline-flex items-center justify-center gap-2 px-6 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-medium text-cyan-300 group-hover:bg-cyan-500/10 transition-colors">
-                                    Enter Playground <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                    Launch Tailwind Editor <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </span>
                             </div>
                         </div>
